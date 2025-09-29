@@ -2,7 +2,7 @@
 
 ## Overview
 In this project, I set up a virtualized environment using VirtualBox and Ubuntu to host a simple web server.  
-The goal was to learn the basics of virtualization, system installation, networking, service configuration, and the use of Linux commands. 
+The goal was to learn the basics of virtualization, system installation, networking, service configuration, and using Linux commands. 
 This was my first practical lab for building cybersecurity skills after the theoretical introduction to such domains throughout my Google Cybersecurity Course.
 
 ---
@@ -25,20 +25,18 @@ This was my first practical lab for building cybersecurity skills after the theo
 1. **Download VirtualBox**
    - Downloaded VirtualBox version **7.2.2** from the official website.
    - Selected the **Windows package** for installation.
-   - *Screenshot suggestion:* VirtualBox download page with installer.
 
 2. **Download Ubuntu ISO**
    - Downloaded **Ubuntu 24.04.3 LTS** ISO file from the official Ubuntu website.
-   - *Screenshot suggestion:* Ubuntu download page (highlighting chosen version).
 
 3. **Install VirtualBox**
    - Installed VirtualBox on my local hard drive.
-   - *Screenshot suggestion:* Installation success screen (optional, only if clear).
 
 4. **Create New Virtual Machine**
    - Named the VM **“Ubuntu-Portfolio”**.
    - Selected Ubuntu as the guest OS.
-   - *Screenshot suggestion:* VirtualBox “New VM” setup window.
+
+![Create VM](./Screenshots/4_Screenshot_VM_Settings_1.jpg)
 
 5. **Configure Virtual Hardware**
    - Set **Base Memory** to **4096 MB**.
@@ -46,23 +44,28 @@ This was my first practical lab for building cybersecurity skills after the theo
    - *Note:* This configuration balances performance and stability:
      - 4 GB RAM is enough for Ubuntu desktop while leaving resources for the host.
      - 3 CPUs gives the VM responsiveness without overloading the host.
-   - *Screenshot suggestion:* VirtualBox settings page (System tab).
+
+![Config Virtual Hardware](./Screenshots/6_Screenshot_VM_Settings_3.jpg)
 
 6. **Create Virtual Hard Disk**
    - Created a new virtual disk of **30 GB** in VDI format.
-   - *Screenshot suggestion:* VirtualBox storage setup with disk size.
+
+![Create Virtual Hard Disk](./Screenshots/7_Screenshot_VM_Settings_4.jpg)
+
 
 7. **Start Installation & User Setup**
    - Booted the VM with the Ubuntu ISO.
    - Followed installation steps:
      - Language, region, disk setup.
      - Created a **username and password** for login.
-   - *Screenshot suggestion:* Ubuntu installation screen (user setup page).
 
 8. **Successful Boot**
    - The VM started successfully with Ubuntu 24.04.3 LTS installed.
    - Logged in with the created user account.
-   - *Screenshot suggestion:* Ubuntu desktop after first login.
+   - 
+![Successful Boot](./Screenshots/8_Installed_VM_5.jpg)
+
+Note: All screenshots of this process can be found [here](./Screenshots).
 
 ---
 
