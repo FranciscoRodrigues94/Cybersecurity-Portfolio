@@ -2,8 +2,8 @@
 
 ## Overview
 In this project, I set up a virtualized environment using VirtualBox and Ubuntu to host a simple web server.  
-The goal was to learn the basics of virtualization, system installation, networking, and service configuration.  
-This was my first practical lab for building cybersecurity skills.
+The goal was to learn the basics of virtualization, system installation, networking, service configuration, and the use of Linux commands. 
+This was my first practical lab for building cybersecurity skills after the theoretical introduction to such domains throughout my Google Cybersecurity Course.
 
 ---
 
@@ -17,51 +17,52 @@ This was my first practical lab for building cybersecurity skills.
 
 ## Steps
 
-1. **Virtual Machine Setup**
-   - Installed **VirtualBox** on host machine (Windows).
-   - Created a new VM and installed **Ubuntu 22.04 LTS**.
-   - Configured resources (RAM, disk, network adapter).
+   ### Phase 1 - Preparation of the environment – VM & OS Installation
 
-2. **System Preparation**
-   - Updated the system using:
-     ```bash
-     sudo apt update && sudo apt upgrade -y
-     ```
 
-3. **Webserver Installation**
-   - Installed Apache2:
-     ```bash
-     sudo apt install apache2 -y
-     ```
-   - Verified service status:
-     ```bash
-     systemctl status apache2
-     ```
+#### Steps
 
-4. **Networking Configuration**
-   - Configured VM with **host-only adapter** to allow access from host browser.
-   - Verified IP address with:
-     ```bash
-     ip a
-     ```
-   - Tested access from host machine via:
-     ```
-     http://<VM-IP>
-     ```
+1. **Download VirtualBox**
+   - Downloaded VirtualBox version **7.2.2** from the official website.
+   - Selected the **Windows package** for installation.
+   - *Screenshot suggestion:* VirtualBox download page with installer.
 
-5. **Troubleshooting**
-   - Encountered errors with port 80 and connection refused.
-   - Adjusted VirtualBox network settings and confirmed Apache was listening.
-   - Final test: accessed the default Apache webpage from host browser successfully.
+2. **Download Ubuntu ISO**
+   - Downloaded **Ubuntu 24.04.3 LTS** ISO file from the official Ubuntu website.
+   - *Screenshot suggestion:* Ubuntu download page (highlighting chosen version).
 
----
+3. **Install VirtualBox**
+   - Installed VirtualBox on my local hard drive.
+   - *Screenshot suggestion:* Installation success screen (optional, only if clear).
 
-## Evidence
-- [ ] Screenshot: VirtualBox VM running Ubuntu  
-- [ ] Screenshot: Apache service status (running)  
-- [ ] Screenshot: Browser on host showing the Apache default page  
+4. **Create New Virtual Machine**
+   - Named the VM **“Ubuntu-Portfolio”**.
+   - Selected Ubuntu as the guest OS.
+   - *Screenshot suggestion:* VirtualBox “New VM” setup window.
 
-*(Add screenshots into a `/screenshots` folder and link them here.)*
+5. **Configure Virtual Hardware**
+   - Set **Base Memory** to **4096 MB**.
+   - Allocated **3 CPUs**.
+   - *Note:* This configuration balances performance and stability:
+     - 4 GB RAM is enough for Ubuntu desktop while leaving resources for the host.
+     - 3 CPUs gives the VM responsiveness without overloading the host.
+   - *Screenshot suggestion:* VirtualBox settings page (System tab).
+
+6. **Create Virtual Hard Disk**
+   - Created a new virtual disk of **30 GB** in VDI format.
+   - *Screenshot suggestion:* VirtualBox storage setup with disk size.
+
+7. **Start Installation & User Setup**
+   - Booted the VM with the Ubuntu ISO.
+   - Followed installation steps:
+     - Language, region, disk setup.
+     - Created a **username and password** for login.
+   - *Screenshot suggestion:* Ubuntu installation screen (user setup page).
+
+8. **Successful Boot**
+   - The VM started successfully with Ubuntu 24.04.3 LTS installed.
+   - Logged in with the created user account.
+   - *Screenshot suggestion:* Ubuntu desktop after first login.
 
 ---
 
