@@ -17,7 +17,7 @@ This was my first practical lab for building cybersecurity skills after the theo
 
 ## Steps
 
-   ### Phase 1 - Preparation of the environment – VM & OS Installation
+## Phase 1 - Preparation of the environment – VM & OS Installation
 
 
 #### Steps
@@ -69,15 +69,115 @@ Note: All screenshots of this process can be found [here](./Screenshots).
 
 ---
 
-## Key Learnings
-- Basics of creating and managing virtual machines.
-- Installing and configuring a web server in Linux.
-- Importance of network adapter configuration (NAT vs Host-Only).
-- First exposure to troubleshooting connectivity issues between host and VM.
+## Phase 2 – Firewall Setup & SSH Access
+
+In this phase, I secured the VM by configuring a basic firewall (UFW – Uncomplicated Firewall) and enabling SSH access.
+
+### Steps Performed
+
+1. **Installed UFW (Uncomplicated Firewall)**  
+   - Command used:  
+     ```bash
+     sudo apt install ufw -y
+     ```
+   - UFW was already installed and updated to the newest version.  
+   ![UFW Install](./Screenshots/Screenshot%20apt%20install.jpg)
+
+2. **Enabled the Firewall**  
+   - Command used:  
+     ```bash
+     sudo ufw enable
+     ```
+   - Output confirmed that UFW is active and will start automatically on system boot.  
+   ![Firewall Enabled](./Screenshots/Screenshot%20Firewall%20installed.jpg)
+
+3. **Allowed SSH Connections**  
+   - First attempt:  
+     ```bash
+     sudo ufw allow OpenSSH
+     ```
+     Result: Error – no profile found for `OpenSSH`.  
+   - Successful attempt:  
+     ```bash
+     sudo ufw allow ssh
+     ```
+   - This created rules for both IPv4 and IPv6.  
+   ![SSH Rule](./Screenshots/Screenshot%20Firewall%20added%20ssh.jpg)
+
+4. **Checked Firewall Status**  
+   - Command used:  
+     ```bash
+     sudo ufw status
+     ```
+   - Output confirmed UFW was active and rules for SSH were applied.  
+   ![Firewall Status](./Screenshots/Screenshot%20Firewall%20stauts.jpg)
+
+Note: All screenshots of this process can be found [here](./Screenshots).
 
 ---
 
-## Next Steps
-- Harden the server (UFW firewall, SSH keys, disable root login).
-- Capture traffic with Wireshark to analyze HTTP requests.
-- Document secure baseline configurations.
+### Key Learnings (Phase 2 – Firewall Setup & SSH Access)
+
+- **Firewall Basics**: Understood the role of UFW as a simple but effective firewall tool for Linux.  
+- **Service Profiles vs Ports**: Learned the difference between allowing services via profile names (`OpenSSH`) vs directly allowing ports (`ssh`).  
+- **Error Handling**: Encountered and resolved the “profile not found” error for OpenSSH, which reinforced the importance of knowing fallback commands.  
+- **IPv6 Consideration**: UFW automatically applied rules for both IPv4 and IPv6, improving coverage.  
+- **Security Practice**: Enabling UFW early in a setup is a good security habit before exposing any services externally.  
+
+---
+
+## Phase 3 – Networking & Port Forwarding
+
+In this phase, I configured networking in VirtualBox to make my Apache server accessible from the host machine. This involved setting up **NAT port forwarding**, adjusting firewall rules, and validating external access.
+
+### Steps Performed
+
+1. **Configured NAT with Port Forwarding**  
+   - Went into VM settings → Network → Adapter 1 → Attached to NAT.  
+   - Enabled **Port Forwarding Rule**:  
+     - Name: Apache  
+     - Protocol: TCP  
+     - Host Port: 8080  
+     - Guest Port: 80  
+   - This allows requests on `localhost:8080` on the host to be redirected to port `80` inside the VM (where Apache runs).  
+   ![NAT Port Forwarding](./Screenshots/1_Screenshot%20NAT%20Configs.jpg)
+
+2. **Checked Apache Listening Ports**  
+   - Verified Apache was listening on port 80.  
+   - Command used:  
+     ```bash
+     sudo ss -tuln | grep 80
+     ```
+   ![Apache Listening](./Screenshots/2_Error_Host%20doesnt%20open%20localhost_8080.jpg)
+
+3. **Allowed Apache in UFW Firewall**  
+   - Added a firewall rule to allow HTTP/HTTPS traffic:  
+     ```bash
+     sudo ufw allow 'Apache Full'
+     ```
+   - Verified the rules:  
+     ```bash
+     sudo ufw status verbose
+     ```
+   ![Firewall Rule Added](./Screenshots/3_Added%20FW%20Rule.jpg)  
+   ![Firewall Status](./Screenshots/5_Check%20Allowence.jpg)
+
+4. **Troubleshooting Connection**  
+   - First tried accessing `http://localhost:8000` and got a connection refused error.  
+   ![Error 8000](./Screenshots/4_Error%20Browser%20Host.jpg)
+
+   - After correcting to `http://localhost:8080`, the Apache page successfully loaded on the host browser.  
+   ![Apache OK Host](./Screenshots/6_Host%20OK.jpg)
+
+---
+
+### Key Learnings (Phase 3 – Networking & Port Forwarding)
+
+- **NAT Networking in VirtualBox**: Learned that the VM uses NAT to connect to the internet, but port forwarding is required for external (host-to-guest) access.  
+- **Port Forwarding**: Configured a mapping from **host port 8080 → guest port 80**, allowing the Apache service inside the VM to be reachable from the host machine browser.  
+- **Apache Default Port**: Understood that Apache runs by default on port **80**, so without forwarding, the host cannot access it directly.  
+- **Firewall Configuration**: Added `Apache Full` rule in UFW to allow incoming HTTP/HTTPS traffic, reinforcing the importance of securing services.  
+- **Troubleshooting Mindset**: First attempt with wrong port (`8000`) failed, which highlighted the importance of verifying correct port bindings and firewall rules.  
+- **Validation**: Confirmed Apache availability using both terminal (`ss -tuln`, `curl`) and browser access from the host machine.  
+
+---
