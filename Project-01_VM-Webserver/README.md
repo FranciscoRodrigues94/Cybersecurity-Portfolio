@@ -69,115 +69,93 @@ Note: All screenshots of this process can be found [here](./Screenshots).
 
 ---
 
-## Phase 2 – Firewall Setup & SSH Access
 
-In this phase, I secured the VM by configuring a basic firewall (UFW – Uncomplicated Firewall) and enabling SSH access.
+## Phase 2 – System Preparation & Services
 
-### Steps Performed
-
-1. **Installed UFW (Uncomplicated Firewall)**  
-   - Command used:  
-     ```bash
-     sudo apt install ufw -y
-     ```
-   - UFW was already installed and updated to the newest version.  
-   ![UFW Install](./Screenshots/Screenshot%20apt%20install.jpg)
-
-2. **Enabled the Firewall**  
-   - Command used:  
-     ```bash
-     sudo ufw enable
-     ```
-   - Output confirmed that UFW is active and will start automatically on system boot.  
-   ![Firewall Enabled](./Screenshots/Screenshot%20Firewall%20installed.jpg)
-
-3. **Allowed SSH Connections**  
-   - First attempt:  
-     ```bash
-     sudo ufw allow OpenSSH
-     ```
-     Result: Error – no profile found for `OpenSSH`.  
-   - Successful attempt:  
-     ```bash
-     sudo ufw allow ssh
-     ```
-   - This created rules for both IPv4 and IPv6.  
-   ![SSH Rule](./Screenshots/Screenshot%20Firewall%20added%20ssh.jpg)
-
-4. **Checked Firewall Status**  
-   - Command used:  
-     ```bash
-     sudo ufw status
-     ```
-   - Output confirmed UFW was active and rules for SSH were applied.  
-   ![Firewall Status](./Screenshots/Screenshot%20Firewall%20stauts.jpg)
-
-Note: All screenshots of this process can be found [here](./Screenshots).
+In this phase, I prepared the Ubuntu system with updates, checked the OS version, configured a firewall (UFW), and installed/configured the Apache web server.
 
 ---
 
-### Key Learnings (Phase 2 – Firewall Setup & SSH Access)
+### 1. System Updates
 
-- **Firewall Basics**: Understood the role of UFW as a simple but effective firewall tool for Linux.  
-- **Service Profiles vs Ports**: Learned the difference between allowing services via profile names (`OpenSSH`) vs directly allowing ports (`ssh`).  
-- **Error Handling**: Encountered and resolved the “profile not found” error for OpenSSH, which reinforced the importance of knowing fallback commands.  
-- **IPv6 Consideration**: UFW automatically applied rules for both IPv4 and IPv6, improving coverage.  
-- **Security Practice**: Enabling UFW early in a setup is a good security habit before exposing any services externally.  
+I started by making sure the VM was fully updated:
 
----
+- Ran the update and upgrade commands:
+  ```bash
+  sudo apt update && sudo apt upgrade -y
 
-## Phase 3 – Networking & Port Forwarding
+![update](./Screenshots/VM_Update_1.jpg)  
 
-In this phase, I configured networking in VirtualBox to make my Apache server accessible from the host machine. This involved setting up **NAT port forwarding**, adjusting firewall rules, and validating external access.
+- Checked for remaining upgradable packages:
 
-### Steps Performed
+   ```bash
+   sudo apt list --upgradable
 
-1. **Configured NAT with Port Forwarding**  
-   - Went into VM settings → Network → Adapter 1 → Attached to NAT.  
-   - Enabled **Port Forwarding Rule**:  
-     - Name: Apache  
-     - Protocol: TCP  
-     - Host Port: 8080  
-     - Guest Port: 80  
-   - This allows requests on `localhost:8080` on the host to be redirected to port `80` inside the VM (where Apache runs).  
-   ![NAT Port Forwarding](./Screenshots/1_Screenshot%20NAT%20Configs.jpg)
 
-2. **Checked Apache Listening Ports**  
-   - Verified Apache was listening on port 80.  
-   - Command used:  
-     ```bash
-     sudo ss -tuln | grep 80
-     ```
-   ![Apache Listening](./Screenshots/2_Error_Host%20doesnt%20open%20localhost_8080.jpg)
+At first, some packages were held back because of phased updates (Ubuntu only releases some updates gradually).
+- To force all updates, I used:
 
-3. **Allowed Apache in UFW Firewall**  
-   - Added a firewall rule to allow HTTP/HTTPS traffic:  
-     ```bash
-     sudo ufw allow 'Apache Full'
-     ```
-   - Verified the rules:  
-     ```bash
-     sudo ufw status verbose
-     ```
-   ![Firewall Rule Added](./Screenshots/3_Added%20FW%20Rule.jpg)  
-   ![Firewall Status](./Screenshots/5_Check%20Allowence.jpg)
 
-4. **Troubleshooting Connection**  
-   - First tried accessing `http://localhost:8000` and got a connection refused error.  
-   ![Error 8000](./Screenshots/4_Error%20Browser%20Host.jpg)
+   ```bash
+   sudo apt -o APT::Get::Always-Include-Phased-Updates=true full-upgrade -y
+   ```
 
-   - After correcting to `http://localhost:8080`, the Apache page successfully loaded on the host browser.  
-   ![Apache OK Host](./Screenshots/6_Host%20OK.jpg)
+After that, ```apt list --upgradable ``` returned no pending updates, meaning the system was up to date.
+- I also checked the distribution version with:
 
----
 
-### Key Learnings (Phase 3 – Networking & Port Forwarding)
+   ```bash
+   lsb_release -a
+   ```
 
-- **NAT Networking in VirtualBox**: Learned that the VM uses NAT to connect to the internet, but port forwarding is required for external (host-to-guest) access.  
-- **Port Forwarding**: Configured a mapping from **host port 8080 → guest port 80**, allowing the Apache service inside the VM to be reachable from the host machine browser.  
-- **Apache Default Port**: Understood that Apache runs by default on port **80**, so without forwarding, the host cannot access it directly.  
-- **Firewall Configuration**: Added `Apache Full` rule in UFW to allow incoming HTTP/HTTPS traffic, reinforcing the importance of securing services.  
-- **Troubleshooting Mindset**: First attempt with wrong port (`8000`) failed, which highlighted the importance of verifying correct port bindings and firewall rules.  
-- **Validation**: Confirmed Apache availability using both terminal (`ss -tuln`, `curl`) and browser access from the host machine.  
+- Verified that the system was up-to-date and I'm operating with the newest version.
 
----
+(por que é importante...)
+
+### 2. Firewall Configuration
+
+- To secure the VM, I installed UFW (Uncomplicated Firewall):
+
+   ```bash
+   sudo apt install ufw -y
+   ```
+
+- Then I enabled it:
+
+   ```bash
+   sudo ufw enable
+   ```
+
+- And confirmed it was active:
+
+   ```bash
+   sudo ufw status
+   ```
+   
+At first, I made a mistake by trying to allow OpenSSH (this returned an error).
+
+- I corrected it with:
+
+   ```bash
+   sudo ufw allow ssh
+   ```
+   
+However, this rule allows SSH from any IP.
+- Since I want to follow security best practices, I restricted SSH access only to my host machine by adding its IPv4 address (192.168.178.21):
+
+   ```bash
+   sudo ufw allow from 192.168.178.21 to any port 22
+   ```
+
+- After that, I removed the generic SSH rule so only the host-specific rule remained active.
+
+  ```
+  sudo ufw delete allow 22/tcp
+  ```
+
+
+  
+(é importante porque...)
+
+
+
