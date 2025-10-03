@@ -62,7 +62,7 @@ This was my first practical lab for building cybersecurity skills after the theo
 8. **Successful Boot**
    - The VM started successfully with Ubuntu 24.04.3 LTS installed.
    - Logged in with the created user account.
-   - 
+
 ![Successful Boot](./Screenshots/8_Installed_VM_5.jpg)
 
 Note: All screenshots of this process can be found [here](./Screenshots).
@@ -84,13 +84,12 @@ I started by making sure the VM was fully updated:
   ```bash
   sudo apt update && sudo apt upgrade -y
 
-![update](./Screenshots/VM_Update_1.jpg)  
+![update](./Screenshots/09_VM_Update.jpg)
 
 - Checked for remaining upgradable packages:
 
    ```bash
    sudo apt list --upgradable
-
 
 At first, some packages were held back because of phased updates (Ubuntu only releases some updates gradually).
 - To force all updates, I used:
@@ -101,6 +100,10 @@ At first, some packages were held back because of phased updates (Ubuntu only re
    ```
 
 After that, ```apt list --upgradable ``` returned no pending updates, meaning the system was up to date.
+
+![remaining_updates](./Screenshots/11_VM_list_done.jpg)
+
+
 - I also checked the distribution version with:
 
 
@@ -108,9 +111,14 @@ After that, ```apt list --upgradable ``` returned no pending updates, meaning th
    lsb_release -a
    ```
 
+![version_check](./Screenshots/12_VM_Version_Check.jpg)
+
+
 - Verified that the system was up-to-date and I'm operating with the newest version.
 
 (por que é importante...)
+
+
 
 ### 2. Firewall Configuration
 
@@ -119,6 +127,8 @@ After that, ```apt list --upgradable ``` returned no pending updates, meaning th
    ```bash
    sudo apt install ufw -y
    ```
+
+   
 
 - Then I enabled it:
 
@@ -131,15 +141,21 @@ After that, ```apt list --upgradable ``` returned no pending updates, meaning th
    ```bash
    sudo ufw status
    ```
+![firewall_startus](./Screenshots/14_FW_status.jpg)
+
+
    
-At first, I made a mistake by trying to allow OpenSSH (this returned an error).
+At first, I made a mistake by trying to allow **OpenSSH (this returned an error)**.
 
 - I corrected it with:
 
    ```bash
    sudo ufw allow ssh
    ```
-   
+
+![ssh_rule](./Screenshots/15_FW_added_ssh.jpg)
+
+
 However, this rule allows SSH from any IP.
 - Since I want to follow security best practices, I restricted SSH access only to my host machine by adding its IPv4 address (192.168.178.21):
 
@@ -147,12 +163,15 @@ However, this rule allows SSH from any IP.
    sudo ufw allow from 192.168.178.21 to any port 22
    ```
 
+![IP_rule_1](./Screenshots/16_FW_added_IP_rule.jpg)
+
 - After that, I removed the generic SSH rule so only the host-specific rule remained active.
 
   ```
   sudo ufw delete allow 22/tcp
   ```
 
+![IP_rule_2](./Screenshots/17_removed_rule.jpg)
 
   
 (é importante porque...)
