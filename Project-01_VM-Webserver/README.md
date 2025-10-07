@@ -15,7 +15,7 @@ This was my first practical lab for building cybersecurity skills after the theo
 
 ---
 
-### Phase 1 - Preparation of the environment – VM & OS Installation
+# Phase 1 - Preparation of the environment – VM & OS Installation
 
 ## Steps
 
@@ -52,9 +52,8 @@ This was my first practical lab for building cybersecurity skills after the theo
 
 7. **Start Installation & User Setup**
    - Booted the VM with the Ubuntu ISO.
-   - Followed installation steps:
-     - Language, region, disk setup.
-     - Created a **username and password** for login.
+   - Followed installation steps.
+   - Created a **username and password** for login.
 
 8. **Successful Boot**
    - The VM started successfully with Ubuntu 24.04.3 LTS installed.
@@ -67,13 +66,14 @@ Note: All screenshots of this process can be found [here](./Screenshots).
 ---
 
 
-## Phase 2 – System Preparation & Services
+# Phase 2 – System Preparation & Services
 
 In this phase, I prepared the Ubuntu system with updates, checked the OS version, configured a firewall (UFW), and installed/configured the Apache web server.
 
 ---
+# Steps
 
-### 1. System Updates
+## 1. System Updates
 
 I started by making sure the VM was fully updated:
 
@@ -114,14 +114,12 @@ I also checked the distribution version with:
 
 ![version_check](./Screenshots/12_VM_Version_Check.jpg)
 
+I checked the system version using `lsb_release -a` to document which Linux distribution and release I was working on.  
+This ensures compatibility when installing packages and helps maintain accurate records of the environment setup.
 
-Verified that the system was up-to-date and I'm operating with the newest version.
 
-(por que é importante...)
-
+## 2. Firewall Configuration
 ---
-
-### 2. Firewall Configuration
 
 To secure the VM, I installed UFW (Uncomplicated Firewall):
 
@@ -143,7 +141,7 @@ And confirmed it was active:
 ![firewall_startus](./Screenshots/14_FW_status.jpg)
 
 
-At first, I made a mistake by trying to allow **OpenSSH (this returned an error)**.
+At first, I made a mistake by typing wrong - **OpenSSH (this returned an error)**.
 
 I corrected it with:
 
@@ -173,11 +171,14 @@ After that, I removed the generic SSH rule so only the host-specific rule remain
 ![IP_rule_2](./Screenshots/17_removed_rule.jpg)
 
   
-(é importante porque...)
+Restricting SSH access to a specific IP is a key security measure.  
+By default, allowing SSH from "anywhere" exposes the VM to potential brute-force or unauthorized login attempts if it’s ever connected to a broader network.  
+Limiting access only to my host machine (192.168.178.21) ensures that remote connections are accepted exclusively from a trusted source, greatly reducing the attack surface.
 
+
+
+## 3.  Apache2 Installation and Configuration
 ---
-
-### 3.  Apache2 Installation and Configuration
 
 After configuring the VM's Firewall, I proceeded to install **Apache2**.
 
@@ -193,14 +194,14 @@ This command installs the Apache HTTP Server along with its dependencies (`apach
 After installation I checked if Apache2 is active and running.  
 The output showed:
 
-**Active: active (running)**
+   - **Active: active (running)**
 
 
 ![Apache_active](./Screenshots/19_Apache_install_active_2.jpg)
 
 ---
 
-## Warning Message: ServerName Not Defined
+### Warning Message: ServerName Not Defined
 
 However, a warning message was also in the output:
 
@@ -219,7 +220,7 @@ This applied the alterations without the need to restart the service.
 
 ---
 
-## Confirming Apache is responding
+### Confirming Apache is responding
 
 To confirm that Apache was responding correctly, I opened my browser inside the host machine and visited:
 
@@ -235,7 +236,7 @@ This confirmed that the server was successfully running and responding with web 
 
 ---
 
-## Testing Apache with cURL
+### Testing Apache with cURL
 
 After confirming in the browser that Apache was running and displaying the default page,  I also tested it using **cURL** to verify that the server was correctly responding to HTTP requests.  
 This allowed me to check the response headers and confirm that Apache was serving web content as expected.
@@ -256,7 +257,7 @@ This happened because the **cURL** (command line tool to access websites) wasn�
 
 ---
 
-## Installing cURL
+### Installing cURL
 
 To install cURL I followed the instructions provided by the terminal and **cURL was successfully installed** using the system’s package manager (`apt`).  
 This confirmed that the utility was added correctly and is now available for HTTP request testing.
@@ -274,7 +275,7 @@ I installed the program using:
 
 ---
 
-## Testing Apache Again
+### Testing Apache Again
 
 After installing cURL successfully, I tried to test if I could reach Apache again:
 
@@ -295,7 +296,7 @@ This means:
 
 ---
 
-## Final Verification via Browser
+### Final Verification via Browser
 
 After applying all configurations (including setting the `ServerName` and deploying my custom HTML page),  I reopened the browser and visited `http://localhost` again.
 
@@ -314,9 +315,85 @@ This step served as a final visual check that the Apache installation and config
 
 ![apache_test](./Screenshots/24_Apache_Test.jpg)
 
+
+## 4.  Network Configuration and Host Access (Port Forwarding + Firewall)
+
+After confirming that Apache was running inside the VM,  the next step was to make the web server accessible **from the host machine** (Windows) instead of only from the browser inside the VM.
+
 ---
 
-### 4.  Windows Forwarding
+### Network Setup (NAT and Port Forwarding)
+
+
+In VirtualBox, I enabled the **Network Adapter** and attached it to **NAT** mode.  
+Then I created a **Port Forwarding Rule** for Apache:
+
+| Name   | Protocol | Host Port | Guest Port |
+|--------|-----------|------------|-------------|
+| Apache | TCP       | 8080       | 80          |
+
+This means:
+- Any request to **localhost:8080** on the host will be forwarded to **port 80** inside the VM.  
+- Port 80 is where Apache listens by default.
+
+![Network Configuration](./Screenshots/25_Screenshot_NAT_Configs.jpg)
+
+---
+
+### Allowing Apache Access from Host IP
+
+To enable secure access, I configured the firewall to allow traffic on ports 80 and 443 only from my host IP address (192.168.178.21).  
+
+This ensured that:
+- The Apache server is reachable from the host machine.  
+- No other devices on the local network can access the server.
+I choose to restrict access on my local network as a way of demonstrating security best practices.
+
+![Firewall Rule Added](./Screenshots/28_Added_FW_Rule.jpg)
+
+---
+
+### Test - Access from Host
+
+After all set up, I loaded the page on the browser of my host machine and visited:
+
+`http://localhost:8080`
+
+The page loaded successfully, displaying my custom HTML message:
+
+   >**Apache Web Server running on my VM**  
+   >*Configured and deployed by Francisco*
+
+![Apache Running from Host](./Screenshots/29_Host_OK.jpg)
+
+---
+
+##  Final Security Adjustment
+
+After verifying that Apache and SSH were working correctly,  I refined the firewall configuration by deleting the general `Apache Full` rule.  
+Now, only ports **22** (SSH) and **80/443** (HTTP/HTTPS) are open and access is restricted exclusively to my host machine’s IP (**192.168.178.21**).  
+
+   - This ensures minimal exposure while keeping remote management and web access functional for testing.
+
+
+![ApacheFull_Deleted](./Screenshots/30_FW_ApacheFull_Delete.jpg)
+
+
+Note: All screenshots of this process can be found [here](./Screenshots).
+
+
+---
+
+### Conclusion
+
+This confirmed that:
+
+- The **port forwarding** rule in VirtualBox was configured correctly.  
+- The **UFW firewall** allows access only from my host IP for better security.  
+- Apache was successfully reachable from the host browser through `localhost:8080`.  
+- The web server is now fully functional and safely accessible from the host system.
+
+
 
 
 
