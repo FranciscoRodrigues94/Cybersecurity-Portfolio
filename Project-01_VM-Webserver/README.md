@@ -33,7 +33,7 @@ This was my first practical lab for building cybersecurity skills after the theo
    - Named the VM **“Ubuntu-Portfolio”**.
    - Selected Ubuntu as the guest OS.
 
-![Create VM](./Screenshots/4_Screenshot_VM_Settings_1.jpg)
+![Create VM](./Screenshots/04_Screenshot_VM_Settings_1.jpg)
 
 5. **Configure Virtual Hardware**
    - Set **Base Memory** to **4096 MB**.
@@ -42,12 +42,12 @@ This was my first practical lab for building cybersecurity skills after the theo
      - 4 GB RAM is enough for Ubuntu desktop while leaving resources for the host.
      - 3 CPUs gives the VM responsiveness without overloading the host.
 
-![Config Virtual Hardware](./Screenshots/6_Screenshot_VM_Settings_3.jpg)
+![Config Virtual Hardware](./Screenshots/06_Screenshot_VM_Settings_3.jpg)
 
 6. **Create Virtual Hard Disk**
    - Created a new virtual disk of **30 GB** in VDI format.
 
-![Create Virtual Hard Disk](./Screenshots/7_Screenshot_VM_Settings_4.jpg)
+![Create Virtual Hard Disk](./Screenshots/07_Screenshot_VM_Settings_4.jpg)
 
 
 7. **Start Installation & User Setup**
@@ -59,7 +59,7 @@ This was my first practical lab for building cybersecurity skills after the theo
    - The VM started successfully with Ubuntu 24.04.3 LTS installed.
    - Logged in with the created user account.
 
-![Successful Boot](./Screenshots/8_Installed_VM_5.jpg)
+![Successful Boot](./Screenshots/08_Installed_VM_5.jpg)
 
 Note: All screenshots of this process can be found [here](./Screenshots).
 
